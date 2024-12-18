@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Interactivo</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin: 20px 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        #quiz {
+            background: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question h3 {
+            font-size: 1.2em;
+        }
+        .options button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            background: #f5f5f5;
+            transition: all 0.3s;
+        }
+        .options button:hover {
+            background: #ddd;
+        }
+        .options button.correct {
+            background-color: #4CAF50 !important;
+            color: white;
+            animation: correctEffect 0.5s ease-in-out;
+        }
+        .options button.wrong {
+            background-color: #f44336 !important;
+            color: white;
+            animation: wrongEffect 0.5s ease-in-out;
+        }
+        @keyframes correctEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes wrongEffect {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        #score {
+            text-align: center;
+            font-size: 1.8em;
+            margin-top: 30px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Examen Interactivo</h1>
+
+    <div id="quiz"></div>
+    <div id="score"></div>
+
+    <audio id="correctSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    <audio id="wrongSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
+
+    <script>
+        const questions = [
+            { question: "¿Cuál es la finalidad principal de la investigación comercial?", options: ["Realizar encuestas y cuestionarios", "Obtener información relevante para solucionar problemas y aprovechar oportunidades", "Organizar y archivar datos internos", "Analizar datos financieros de la empresa"], correct: 1 },
+            { question: "En la fase de diseño de la investigación, ¿qué se debe determinar?", options: ["Las bases de datos que se van a utilizar", "El plan de muestreo y los tipos de estudio", "Los problemas internos de la organización", "La finalidad de los informes finales"], correct: 1 },
+            { question: "¿Qué caracteriza a una investigación exploratoria?", options: ["Utiliza datos cuantitativos y objetivos", "Se enfoca en muestras grandes y representativas", "Se aplica a problemas poco definidos con métodos cualitativos", "Analiza relaciones causa-efecto entre variables"], correct: 2 },
+            { question: "¿Cuál de los siguientes es un ejemplo de fuente secundaria?", options: ["Encuestas personalizadas", "Registros de ventas de la propia empresa", "Informes estadísticos del INE", "Cuestionarios en profundidad"], correct: 2 },
+            { question: "En el diseño de investigación causal, el objetivo principal es:", options: ["Describir características de un fenómeno", "Medir cambios a lo largo del tiempo", "Evaluar la relación causa-efecto entre variables", "Identificar problemas no definidos"], correct: 2 },
+            { question: "¿Qué tipo de diseño de investigación mide los cambios a lo largo del tiempo?", options: ["Transversal", "Longitudinal", "Exploratorio", "Descriptivo"], correct: 1 },
+            { question: "En la organización de datos, ¿qué sistema se utiliza comúnmente?", options: ["Codificación de información por fecha y fuente", "Archivo de documentos físicos sin categoría", "Registro de información sin organización previa", "Ordenación alfabética de las entrevistas"], correct: 0 },
+            { question: "¿Cuál de las siguientes opciones corresponde a un ejemplo de fuente primaria?", options: ["Informes gubernamentales", "Entrevistas en profundidad", "Bases de datos externas", "Estudios publicados en Google Académico"], correct: 1 },
+            { question: "¿Qué significa la técnica de pseudocompra?", options: ["Realizar entrevistas telefónicas anónimas", "Comprar ficticiamente para analizar procesos comerciales", "Consultar a clientes habituales para obtener información", "Analizar patrones de venta en el mercado digital"], correct: 1 },
+            { question: "¿Cuál es el propósito principal de una base de datos relacional?", options: ["Recopilar solo datos cualitativos", "Centralizar y agrupar información de diversas fuentes", "Registrar entrevistas presenciales", "Generar resultados automáticos sin análisis"], correct: 1 },
+            { question: "¿Cuál de los siguientes criterios se utiliza para seleccionar fuentes secundarias?", options: ["Accesibilidad, exactitud y relevancia", "Precio, diseño y ubicación geográfica", "Tiempo de respuesta de las fuentes primarias", "Resultados de ventas mensuales"], correct: 0 },
+            { question: "¿En qué fase del proceso metodológico se organiza y analiza la información recopilada?", options: ["Trabajo de campo", "Definición del problema", "Preparación y análisis de datos", "Elaboración del informe final"], correct: 2 },
+            { question: "¿Qué tecnología se utiliza para identificar patrones en grandes volúmenes de datos?", options: ["CRM", "Data Mining", "Data Warehouse", "Sistema de Información de Ventas"], correct: 1 },
+            { question: "La investigación descriptiva utiliza principalmente:", options: ["Entrevistas personales", "Encuestas y observaciones", "Datos no estructurados", "Informes de resultados históricos"], correct: 1 },
+            { question: "¿Cuál de los siguientes motores de búsqueda se considera fuente terciaria?", options: ["Google Académico", "Bing", "Redes sociales", "Catálogos internos de la empresa"], correct: 0 },
+            { question: "El presupuesto de una investigación depende de:", options: ["El tamaño de la muestra y el diseño de investigación", "La cantidad de encuestadores disponibles", "El tipo de datos seleccionados", "El tiempo de organización interna"], correct: 0 },
+            { question: "¿Cuál de los siguientes es un ejemplo de base de datos interna?", options: ["Informes de la competencia", "Registros de reclamaciones de clientes", "Estudios estadísticos publicados", "Publicaciones de redes sociales externas"], correct: 1 },
+            { question: "El uso de Google Analytics es un ejemplo de:", options: ["Base de datos interna", "Fuente externa para analizar comportamientos", "Registro de datos cualitativos", "Herramienta exclusiva para informes escritos"], correct: 1 },
+            { question: "¿Qué fase cierra el proceso de investigación comercial?", options: ["Trabajo de campo", "Presentación del informe final", "Desarrollo del enfoque del problema", "Definición del problema"], correct: 1 },
+            { question: "Las bases de datos externas suelen incluir:", options: ["Información de la propia organización", "Datos gestionados por entidades públicas o privadas", "Resultados de ventas semanales", "Registros internos de clientes"], correct: 1 }
+        ];
+
+        const quizContainer = document.getElementById("quiz");
+        const scoreContainer = document.getElementById("score");
+        const correctSound = document.getElementById("correctSound");
+        const wrongSound = document.getElementById("wrongSound");
+
+        let score = 0;
+        let answeredQuestions = 0;
+
+        function loadQuiz() {
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+
+                const questionTitle = document.createElement("h3");
+                questionTitle.textContent = `${index + 1}. ${q.question}`;
+                questionDiv.appendChild(questionTitle);
+
+                const optionsDiv = document.createElement("div");
+                optionsDiv.classList.add("options");
+
+                q.options.forEach((option, i) => {
+                    const button = document.createElement("button");
+                    button.textContent = option;
+                    button.addEventListener("click", () => checkAnswer(button, q.correct, i, optionsDiv));
+                    optionsDiv.appendChild(button);
+                });
+
+                questionDiv.appendChild(optionsDiv);
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(selectedButton, correctIndex, selectedIndex, optionsDiv) {
+            if (!selectedButton.disabled) {
+                Array.from(optionsDiv.children).forEach((button, i) => {
+                    button.disabled = true;
+                    if (i === correctIndex) {
+                        button.classList.add("correct");
+                    }
+                });
+
+                if (selectedIndex === correctIndex) {
+                    selectedButton.classList.add("correct");
+                    correctSound.play();
+                    score++;
+                } else {
+                    selectedButton.classList.add("wrong");
+                    wrongSound.play();
+                    score -= 0.25;
+                }
+
+                answeredQuestions++;
+                if (answeredQuestions === questions.length) {
+                    showScore();
+                }
+            }
+        }
+
+        function showScore() {
+            const finalScore = Math.max(0, (score / questions.length) * 10).toFixed(2);
+            scoreContainer.textContent = `Tu nota final es: ${finalScore} / 10`;
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>
